@@ -20,7 +20,6 @@ def ecb_mode(plain):
         header = binary_f[:54]
         outfile. write(header)
         image = binary_f[54:]
-        
         padded_plain = pad(image, AES.block_size, style='pkcs7')
         aes_obj = AES.new(key, AES.MODE_ECB)
         cipher_text = aes_obj.encrypt(padded_plain)
@@ -29,28 +28,37 @@ def ecb_mode(plain):
     outfile.close()
 
 
+# From https://techoverflow.net/2020/09/27/how-to-fix-python3-typeerror-unsupported-operand-types-for-bytes-and-bytes/
+def bitwise_xor_bytes(a, b):
+    result_int = int.from_bytes(a, byteorder="big") ^ int.from_bytes(b, byteorder="big")
+    return result_int.to_bytes(max(len(a), len(b)), byteorder="big")
+
+
+
+
 def cbc_mode(plain):
 
 
-    outfile = open("out.bmp", "w")
+    outfile = open("out2.bmp", "wb")
 
     with open(plain, "rb") as f:
-        header = plain[:54]
+        binary_f = f.read()
+        header = binary_f[:54]
         outfile. write(header)
-        image = plain[54:]
-        padded_plain = pad(image , AES.block_size, style='pkcs7')
-
+        image = binary_f[54:]
+        padded_plain = pad(image, AES.block_size, style='pkcs7')
         aes_obj = AES.new(key, AES.MODE_ECB)
+
         for i in range(len(padded_plain)//BLOCKSIZE):
             current_block = padded_plain[i * BLOCKSIZE : (i + 1) * BLOCKSIZE]
             if (i == 0):
-                current_block = current_block ^ iv
+                current_block = bitwise_xor_bytes(current_block, iv)
             else:
-                current_block = current_block ^ previous_block
+                current_block = bitwise_xor_bytes(current_block, previous_block)
             cipher_text = aes_obj.encrypt(current_block)
             previous_block = cipher_text
-            outfile.write(current_block)
-            return outfile
+            outfile.write(cipher_text)
+    return outfile
 
 
 
@@ -77,4 +85,4 @@ def verify(encrypted_string):
     # speed rsa
     # speed aes
 
-ecb_mode("cp-logo.bmp")
+cbc_mode("cp-logo.bmp")
