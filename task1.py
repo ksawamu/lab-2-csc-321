@@ -1,7 +1,6 @@
 # csc 321
 # lab 2
 # task 1
-#from Cryptodome.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
@@ -15,20 +14,19 @@ key = get_random_bytes(BLOCKSIZE)
 iv = get_random_bytes(BLOCKSIZE)
 
 def ecb_mode(plain):
-    outfile = open("out.bmp", "w")
-    #read plain text as binary
+    outfile = open("out.bmp", "wb")
     with open(plain, "rb") as f:
-        outfile.write(plain)
-        header = plain[:54]
+        binary_f = f.read()
+        header = binary_f[:54]
         outfile. write(header)
-        image = plain[54:]
-        padded_plain = pad(bytes(image, "utf-8"), AES.block_size, style='pkcs7')
-        aes_obj = AES.new(key, AES.MODE_ECB)
-        #cipher_text = aes_obj.encrypt(padded_plain, "out.txt") #"UTF-8"
-        cipher_text = aes_obj.encrypt(padded_plain)
-        outfile.write(str(cipher_text))
+        image = binary_f[54:]
         
-    
+        padded_plain = pad(image, AES.block_size, style='pkcs7')
+        aes_obj = AES.new(key, AES.MODE_ECB)
+        cipher_text = aes_obj.encrypt(padded_plain)
+        outfile.write(cipher_text)
+        
+    outfile.close()
 
 
 def cbc_mode(plain):
@@ -72,11 +70,11 @@ def verify(encrypted_string):
         return False
 
 
-# 1) Ask about bmp files and if we need to not just write to bmps because verify() doesn't take in a bmp
-# it takes in a string
 
 # 2) Ask about bit flipping for the admin=True thing
 
-
+# 3) the openSSL
+    # speed rsa
+    # speed aes
 
 ecb_mode("cp-logo.bmp")
