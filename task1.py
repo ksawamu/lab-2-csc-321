@@ -106,7 +106,7 @@ def verify(encrypted_string):
     # speed rsa
     # speed aes
 #ecb_mode("cp-logo.bmp")
-#cbc_mode("cp-logo.bmp")
+# cbc_mode("cp-logo.bmp")
 submit("8admin7true8")
 
 print_bytes_all()
