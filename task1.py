@@ -76,7 +76,6 @@ def cbc_mode_str(plain_str):
         previous_block = cipher_text
         outfile.write(bytes(cipher_text))
         block_cipher_text.append(bytes(cipher_text))
-        #(print(type((cipher_text))))
     global_cipher_text = temp_cipher_text
     return global_cipher_text #this used to be the outfile, lol
 
@@ -94,27 +93,35 @@ def submit (user_input):
     new_string = new_string.replace("=", "%3D")
     new_string = new_string.replace(";", "%3B")
     padded_input = pad(bytes(new_string, "utf-8") , AES.block_size, style='pkcs7')
+    print(padded_input)
 
     return cbc_mode_str(padded_input)
 
 def verify(encrypted_string):
+    print("encrypted_string")
+    print(encrypted_string)
     encrypted_list = []
-    temp = b""
     i = 0
-    for i in range(len(encrypted_string)):
-        if i % 16 != 0:
-            temp += bytes(encrypted_string[i])
-        else:
-            encrypted_list.append(temp)
-            temp = b""
-    
+    print(len(encrypted_string))
+    while (i < len(encrypted_string)):
+        encrypted_list.append(bytes(encrypted_string[i: i +16]))
+        i += 16
         
     cipher = AES.new(key, AES.MODE_ECB)
     i = len(encrypted_list)
-    plain_text = ""
+    plain_text = b""
+    print(len(encrypted_list))
     for i in range(len(encrypted_list) - 1, 0, -1):
         if i == len(encrypted_list) - 1:
-            decrypted = unpad(cipher.decrypt(encrypted_list[i]), BLOCKSIZE)
+            print(encrypted_list[i])
+            print(len(encrypted_list[i]))
+            # start to see if can decrypt to see if it matches the
+            # b'userid%3D456%3Buserdata%3D8admin7true8%3Bsession-id%3D31337\x05\x05\x05\x05\x05'
+            # before the cipher text modification (hack thing)
+            print("decrypted:")
+            print(cipher.decrypt(encrypted_list[i]))
+            decrypted = unpad(cipher.decrypt(encrypted_list[i]), BLOCKSIZE, style='pkcs7')
+            
         else:
             decrypted = cipher.decrypt(encrypted_list[i])
 
@@ -130,8 +137,11 @@ def verify(encrypted_string):
 
 
 def hack_verify(encrypted):
-
+    print("len(block_cipher_text): ")
+    print(len(block_cipher_text))
     encrypted_string = block_cipher_text[0] + block_cipher_text[1]
+    print("before attack")
+    print(block_cipher_text[len(block_cipher_text) -1])
     bye_78 = bitwise_and_bytes(block_cipher_text[2], b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
     replace_0 = bitwise_and_bytes(bye_78, b"\x3B\x0f\x0f\x0f\x0f\x0f\x3D\x0f\x0f\x0f\x0f\x3B\x0f\x0f\x0f\x0f")
     encrypted_string += replace_0
@@ -139,13 +149,15 @@ def hack_verify(encrypted):
     while (i < len(block_cipher_text)):
         encrypted_string += block_cipher_text[i]
         i += 1
+    print("after attack")
+    print(encrypted_string[-16:])
+    print("len(encrypted_string): ")
+    print(len(encrypted_string))
     return encrypted_string
 
-# 3) the openSSL
-    # speed rsa
-    # speed aes
-#ecb_mode("cp-logo.bmp")
-# cbc_mode("cp-logo.bmp")
+
+# ecb_mode("mustang.bmp")
+# cbc_mode("mustang.bmp")
 # submit("8admin7true8") #8admin7true8
 
 
@@ -159,7 +171,9 @@ session-id=31337 000000"""
 print_bytes_all()
 print("\n\n")
 
-
+print("------------------")
+print(submit("abcg"))
+print("------------------")
 print(verify(submit("abcdefg")))
-#print(verify(hack_verify(submit("8admin7true8"))))
+# print(verify(hack_verify(submit("8admin7true8"))))
 
