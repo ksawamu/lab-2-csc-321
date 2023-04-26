@@ -97,51 +97,53 @@ def submit (user_input):
     return cbc_mode_str(padded_input)
 
 def verify(encrypted_string):
-    '''
     encrypted_list = []
     i = 0
-    print(len(encrypted_string))
     while (i < len(encrypted_string)):
         encrypted_list.append(bytes(encrypted_string[i: i +16]))
         i += 16
-    '''
+    
     cipher = AES.new(key, AES.MODE_ECB)
 
     plain_text = b""
-    for i in range(len(block_cipher_text) - 1, -1, -1):
-        if i == len(block_cipher_text) - 1:
-            decrypted = cipher.decrypt(block_cipher_text[i])
+    for i in range(len(encrypted_list) - 1, -1, -1):
+        if i == len(encrypted_list) - 1:
+            decrypted = cipher.decrypt(encrypted_list[i])
         else:
-            decrypted = cipher.decrypt(block_cipher_text[i])
+            decrypted = cipher.decrypt(encrypted_list[i])
         if i != 0:
-            plain_text = bitwise_xor_bytes(block_cipher_text[i - 1], decrypted) + plain_text
+            plain_text = bitwise_xor_bytes(encrypted_list[i - 1], decrypted) + plain_text
         else:
             plain_text = bitwise_xor_bytes(iv, decrypted) + plain_text
-    
+    print(plain_text)
     if bytes(";admin=true;", "utf-8") in plain_text:
         return True
     else:
         return False
 
-
-def hack_verify(encrypted):
-    print("len(block_cipher_text): ")
-    print(len(block_cipher_text))
-    encrypted_string = block_cipher_text[0] + block_cipher_text[1]
-    print("before attack")
-    print(block_cipher_text[len(block_cipher_text) -1])
+def hack_verify(encrypted_string):
+    
+    encrypted_list = []
+    i = 0
+    while (i < len(encrypted_string)):
+        encrypted_list.append(bytes(encrypted_string[i: i +16]))
+        i += 16
+    print("what is encrypted_string")
+    print(encrypted_string)
+    
     bye_78 = bitwise_and_bytes(block_cipher_text[2], b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
     replace_0 = bitwise_and_bytes(bye_78, b"\x3B\x0f\x0f\x0f\x0f\x0f\x3D\x0f\x0f\x0f\x0f\x3B\x0f\x0f\x0f\x0f")
     encrypted_string += replace_0
-    i = 3
-    while (i < len(block_cipher_text)):
-        encrypted_string += block_cipher_text[i]
+    
+    i = 0
+    new_encrypted_string = b""
+    while (i < len(encrypted_list)):
+        print("encrypted_list[]", i)
+        print(encrypted_list[i])
+        new_encrypted_string += encrypted_list[i]
         i += 1
-    print("after attack")
-    print(encrypted_string[-16:])
-    print("len(encrypted_string): ")
-    print(len(encrypted_string))
-    return encrypted_string
+    print("this should be the same encrypted string:", new_encrypted_string)
+    return new_encrypted_string
 
 
 # ecb_mode("mustang.bmp")
@@ -155,6 +157,6 @@ def hack_verify(encrypted):
 session-id=31337 000000"""
 
 
-print(verify(submit(";admin=true;")))
-# print(verify(hack_verify(submit("8admin7true8"))))
+# print(verify(submit(";admin=true;")))
+print(verify(hack_verify(submit("8admin7true8"))))
 

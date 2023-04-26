@@ -33,3 +33,5 @@ print(decrypted)
 list = [1, 2, 3, 4]
 for i in range(len(list) - 1, 0, -1):
     print("hello", list[i])
+
+print(bitwise_and_bytes(b"\x0b\x0e\x0f", b"\x0f\x0f\x0f"))
