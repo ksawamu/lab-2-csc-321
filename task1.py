@@ -106,6 +106,8 @@ def verify(encrypted_string):
     while (i < len(encrypted_string)):
         encrypted_list.append(bytes(encrypted_string[i: i +16]))
         i += 16
+    print("encrypted_list: ")
+    print(encrypted_list)
         
     cipher = AES.new(key, AES.MODE_ECB)
     i = len(encrypted_list)
