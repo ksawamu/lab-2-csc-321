@@ -61,23 +61,22 @@ def cbc_mode(plain):
     return outfile
 
 
-def cbc_mode_str(plain_str):
-    outfile = open("out4.txt", "wb")
+def cbc_mode_str(padded_str):
     aes_obj = AES.new(key, AES.MODE_ECB)
     temp_cipher_text = b""
-    for i in range(len(plain_str)//BLOCKSIZE):
-        current_block = plain_str[i * BLOCKSIZE : (i + 1) * BLOCKSIZE]
+    for i in range(len(padded_str)//BLOCKSIZE):
+        current_block = padded_str[i * BLOCKSIZE : (i + 1) * BLOCKSIZE]
         if (i == 0):
             current_block = bitwise_xor_bytes(current_block, iv)
         else:
             current_block = bitwise_xor_bytes(current_block, previous_block)
         cipher_text = aes_obj.encrypt(current_block)
+
         temp_cipher_text += cipher_text
         previous_block = cipher_text
-        outfile.write(bytes(cipher_text))
         block_cipher_text.append(bytes(cipher_text))
     global_cipher_text = temp_cipher_text
-    return global_cipher_text #this used to be the outfile, lol
+    return global_cipher_text
 
 def print_bytes(block_num):
     current_block = block_cipher_text[block_num]
@@ -89,50 +88,36 @@ def print_bytes_all():
 
 
 def submit (user_input):
-    new_string = ";admin=true;sdfsdfsdfsdfsdfsdfsdfsdfsdf"#"userid=456;userdata=" + user_input + ";session-id=31337"
+    new_string = "userid=456;userdata=" + user_input + ";session-id=31337"
     #new_string = new_string.replace("=", "%3D")
     #new_string = new_string.replace(";", "%3B")
     padded_input = pad(bytes(new_string, "utf-8") , AES.block_size, style='pkcs7')
+    print("padded input: ")
     print(padded_input)
-
     return cbc_mode_str(padded_input)
 
 def verify(encrypted_string):
-    print("encrypted_string")
-    print(encrypted_string)
+    '''
     encrypted_list = []
     i = 0
     print(len(encrypted_string))
     while (i < len(encrypted_string)):
         encrypted_list.append(bytes(encrypted_string[i: i +16]))
         i += 16
-    print("encrypted_list: ")
-    print(encrypted_list)
-        
+    '''
     cipher = AES.new(key, AES.MODE_ECB)
-    i = len(encrypted_list)
-    plain_text = b""
-    print(len(encrypted_list))
-    for i in range(len(encrypted_list) - 1, 0, -1):
-        if i == len(encrypted_list) - 1:
-            print(encrypted_list[i])
-            print(len(encrypted_list[i]))
-            # start to see if can decrypt to see if it matches the
-            # b'userid%3D456%3Buserdata%3D8admin7true8%3Bsession-id%3D31337\x05\x05\x05\x05\x05'
-            # before the cipher text modification (hack thing)
-            print("decrypted:")
-            print(cipher.decrypt(encrypted_list[i]))
-            decrypted = cipher.decrypt(encrypted_list[i])
-            
-        else:
-            decrypted = cipher.decrypt(encrypted_list[i])
 
+    plain_text = b""
+    for i in range(len(block_cipher_text) - 1, -1, -1):
+        if i == len(block_cipher_text) - 1:
+            decrypted = cipher.decrypt(block_cipher_text[i])
+        else:
+            decrypted = cipher.decrypt(block_cipher_text[i])
         if i != 0:
-            plain_text = bitwise_xor_bytes(encrypted_list[i - 1], decrypted) + plain_text
+            plain_text = bitwise_xor_bytes(block_cipher_text[i - 1], decrypted) + plain_text
         else:
             plain_text = bitwise_xor_bytes(iv, decrypted) + plain_text
     
-    plain_text = unpad(plain_text, BLOCKSIZE, style='pkcs7')
     if bytes(";admin=true;", "utf-8") in plain_text:
         return True
     else:
@@ -170,13 +155,6 @@ def hack_verify(encrypted):
 session-id=31337 000000"""
 
 
-
-print_bytes_all()
-print("\n\n")
-
-print("------------------")
-print(submit("abcg"))
-print("------------------")
-print(verify(submit("abcdefg")))
+print(verify(submit(";admin=true;")))
 # print(verify(hack_verify(submit("8admin7true8"))))
 

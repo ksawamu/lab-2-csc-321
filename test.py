@@ -18,7 +18,7 @@ def bitwise_and_bytes(a, b):
 
 
 ############ encrypt it ################
-padded_plain = padded_input = pad(bytes("Hello World", "utf-8") , AES.block_size, style='pkcs7')
+padded_plain = pad(bytes("Hello World", "utf-8") , AES.block_size, style='pkcs7')
 aes_obj = AES.new(key, AES.MODE_ECB)
 
 current_block = bitwise_xor_bytes(padded_plain, iv)
@@ -29,3 +29,7 @@ cipher_text = aes_obj.encrypt(current_block)
 decrypted = unpad(bitwise_xor_bytes(iv, aes_obj.decrypt(cipher_text)), BLOCKSIZE, style='pkcs7')
 
 print(decrypted)
+
+list = [1, 2, 3, 4]
+for i in range(len(list) - 1, 0, -1):
+    print("hello", list[i])
