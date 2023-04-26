@@ -89,9 +89,9 @@ def print_bytes_all():
 
 
 def submit (user_input):
-    new_string = "userid=456;userdata=" + user_input + ";session-id=31337"
-    new_string = new_string.replace("=", "%3D")
-    new_string = new_string.replace(";", "%3B")
+    new_string = ";admin=true;sdfsdfsdfsdfsdfsdfsdfsdfsdf"#"userid=456;userdata=" + user_input + ";session-id=31337"
+    #new_string = new_string.replace("=", "%3D")
+    #new_string = new_string.replace(";", "%3B")
     padded_input = pad(bytes(new_string, "utf-8") , AES.block_size, style='pkcs7')
     print(padded_input)
 
@@ -122,7 +122,7 @@ def verify(encrypted_string):
             # before the cipher text modification (hack thing)
             print("decrypted:")
             print(cipher.decrypt(encrypted_list[i]))
-            decrypted = unpad(cipher.decrypt(encrypted_list[i]), BLOCKSIZE, style='pkcs7')
+            decrypted = cipher.decrypt(encrypted_list[i])
             
         else:
             decrypted = cipher.decrypt(encrypted_list[i])
@@ -131,8 +131,9 @@ def verify(encrypted_string):
             plain_text = bitwise_xor_bytes(encrypted_list[i - 1], decrypted) + plain_text
         else:
             plain_text = bitwise_xor_bytes(iv, decrypted) + plain_text
-
-    if ";admin=true;" in plain_text:
+    
+    plain_text = unpad(plain_text, BLOCKSIZE, style='pkcs7')
+    if bytes(";admin=true;", "utf-8") in plain_text:
         return True
     else:
         return False
