@@ -128,21 +128,22 @@ def hack_verify(encrypted_string):
     while (i < len(encrypted_string)):
         encrypted_list.append(bytes(encrypted_string[i: i +16]))
         i += 16
-    print("what is encrypted_string")
+    print("original encrypted_string")
     print(encrypted_string)
     
+    new_encrypted_string = block_cipher_text[0] + block_cipher_text[1]
     bye_78 = bitwise_and_bytes(block_cipher_text[2], b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
     replace_0 = bitwise_and_bytes(bye_78, b"\x3B\x0f\x0f\x0f\x0f\x0f\x3D\x0f\x0f\x0f\x0f\x3B\x0f\x0f\x0f\x0f")
-    encrypted_string += replace_0
+    new_encrypted_string += replace_0
     
-    i = 0
+    i = 3
     new_encrypted_string = b""
     while (i < len(encrypted_list)):
-        print("encrypted_list[]", i)
-        print(encrypted_list[i])
+        #print("encrypted_list[]", i)
+        #print(encrypted_list[i])
         new_encrypted_string += encrypted_list[i]
         i += 1
-    print("this should be the same encrypted string:", new_encrypted_string)
+    print("hacked_encrypted string:", new_encrypted_string)
     return new_encrypted_string
 
 
