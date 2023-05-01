@@ -35,3 +35,8 @@ for i in range(len(list) - 1, 0, -1):
     print("hello", list[i])
 
 print(bitwise_and_bytes(b"\x0b\x0e\x0f", b"\x0f\x0f\x0f"))
+
+print("here")
+print(chr(ord(b"\x0f") ^ ord("6") ^ ord ("7")))
+
+print(93 ^ 1)

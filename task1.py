@@ -135,22 +135,21 @@ def hack_verify(encrypted_string):
 
 
     
-    #new_encrypted_string = encrypted_list[0] #+ encrypted_list[1] + encrypted_list[2] 
+    #new_encrypted_string = encrypted_list[0]
     print("first 3 blocks of new_encrypted_string:")
     #print(new_encrypted_string)
-    #bye_78 = bitwise_and_bytes(encrypted_list[2], b"\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f")#b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
+    #bye_78 = bitwise_and_bytes(encrypted_list[0], b"\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f")#b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
     #replace_0 = bitwise_xor_bytes(bye_78, b"\x3B\x0f\x0f\x0f\x0f\x0f\x3D\x0f\x0f\x0f\x0f\x3B\x0f\x0f\x0f\x0f")
-    # block_cipher_text[2][0] = bytes(0)
     #new_encrypted_string += bye_78
     
     #(encrypted_list[1][0]).to_bytes(1, "big")
     
     new_encrypted_string = encrypted_list[0][0:15]
-    new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[1][15]).to_bytes(1, "big"), b"\x00"), b"\x3B")
+    new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x00"), b"\x3B") # bitwise_xor_bytes(   , b"\x3B")
     # new_encrypted_string += encrypted_list[1][5:10]
-    # new_encrypted_string +=bitwise_xor_bytes((encrypted_list[1][10]).to_bytes(1, "big"), b"\x0f")
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[1][10]).to_bytes(1, "big"), b"\x00"), b"\x3D")
     # new_encrypted_string += encrypted_list[1][11:15]
-    # new_encrypted_string +=bitwise_xor_bytes((encrypted_list[1][15]).to_bytes(1, "big"), b"\x0f")
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[1][15]).to_bytes(1, "big"), b"\x00"), b"\x3B")
     
     # print("type of 1,4: ", type(encrypted_list[1][4]))
     # print("entire encrypted list[1]: ", encrypted_list[1])
@@ -158,13 +157,6 @@ def hack_verify(encrypted_string):
     # print("encrypted list[1][0] in bytes: ", (encrypted_list[1][0]).to_bytes(1, "big"))
     # print("just encrypted_list[1][0]: ", encrypted_list[1][0])
     
-    # new_encrypted_string is the size of a block and has now been modified
-    
-    # first = bitwise_xor_bytes(encrypted_string[16:32], b"\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f")
-    # second = bitwise_xor_bytes(encrypted_string[16:32], b"\x00\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f")
-    # print("this is the first one: ", first)
-    # print("this is the second one: ", second)
-    # new_encrypted_string += first
     
     i = 1
     while (i < len(encrypted_list)):
