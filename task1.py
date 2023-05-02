@@ -138,6 +138,71 @@ def hack_verify(encrypted_string):
     ata=8admin7true8
     ; 000000000
     session-id=31337 000000"""
+    # # correct below for i=1
+    # new_encrypted_string = encrypted_list[0][0:15]
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    # # correct above for i = 1 and changing second ;
+    
+    #new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][4]).to_bytes(1, "big"), b"\x3B"), b"\x38") 
+    
+    # new_encrypted_string += encrypted_list[1][5:10]
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[1][10]).to_bytes(1, "big"), b"\x00"), b"\x3D")
+    
+    # # below
+    # new_encrypted_string = encrypted_list[0][0:15]
+    # print("new_encrypted_string: ", new_encrypted_string)
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38") 
+    # print("after xor new_encrypted_string: ", new_encrypted_string)
+    # #new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38") # bitwise_xor_bytes(   , b"\x3B")
+    
+    # #new_encrypted_string += encrypted_list[1][5:10]
+    # new_encrypted_string += encrypted_list[1][0:10]
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[1][10]).to_bytes(1, "big"), b"\x3D"), b"\x37")
+    # new_encrypted_string += encrypted_list[1][11:15]
+    # new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[1][15]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    # new_encrypted_string += encrypted_list[2]
+    # new_encrypted_string += encrypted_list[3]
+    # # above
+    
+    # new below
+    # new above
+    
+    # new attempt below
+    # new_encrypted_string = encrypted_list[0][0:16]
+    # new_encrypted_string[0][4] = bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][4]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    # new_encrypted_string[0][10] = bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][10]).to_bytes(1, "big"), b"\x3D"), b"\x37")
+    # new_encrypted_string[0][15] = bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    # new attempt above
+    new_encrypted_string = encrypted_list[0][0:4]
+    #print("encrypted_list[0][0:4] is: ", encrypted_list[0][0:4])
+    print("encrypted_list[0] is: ", encrypted_list[0])
+    new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][4]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    print("nes after first xor: ", new_encrypted_string)
+    new_encrypted_string += encrypted_list[0][5:10]
+    new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][10]).to_bytes(1, "big"), b"\x3D"), b"\x37")
+    new_encrypted_string += encrypted_list[0][11:15]
+    new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38")
+    new_encrypted_string += encrypted_list[1]
+    new_encrypted_string += encrypted_list[2]
+    new_encrypted_string += encrypted_list[3]
+    print("this is what nes is: ", new_encrypted_string)
+    count = 1
+    for b in new_encrypted_string:
+        print("this is b: ", b, " and count is: ", count)
+        count += 1
+    
+    
+    
+    # # set the rest of new_encrypted_string
+    # i = 1
+    # while (i < len(encrypted_list)):
+    #     #print("encrypted_list[]", i)
+    #     #print(encrypted_list[i])
+    #     new_encrypted_string += encrypted_list[i]
+    #     i += 1
+    print("complete hacked_encrypted string:")
+    print(new_encrypted_string)
+    return new_encrypted_string
     
     #new_encrypted_string = encrypted_list[0]
     #print("first 3 blocks of new_encrypted_string:")
@@ -147,9 +212,6 @@ def hack_verify(encrypted_string):
     #new_encrypted_string += bye_78
     
     #(encrypted_list[1][0]).to_bytes(1, "big")
-    
-    new_encrypted_string = encrypted_list[0][0:15]
-    new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38") 
     
     
     #new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x00"), b"\x3B") 
@@ -168,15 +230,15 @@ def hack_verify(encrypted_string):
     # print("just encrypted_list[1][0]: ", encrypted_list[1][0])
     
     
-    i = 1
-    while (i < len(encrypted_list)):
-        #print("encrypted_list[]", i)
-        #print(encrypted_list[i])
-        new_encrypted_string += encrypted_list[i]
-        i += 1
-    print("complete hacked_encrypted string:")
-    print(new_encrypted_string)
-    return new_encrypted_string
+    # i = 1
+    # while (i < len(encrypted_list)):
+    #     #print("encrypted_list[]", i)
+    #     #print(encrypted_list[i])
+    #     new_encrypted_string += encrypted_list[i]
+    #     i += 1
+    # print("complete hacked_encrypted string:")
+    # print(new_encrypted_string)
+    # return new_encrypted_string
 
 
 # ecb_mode("mustang.bmp")
