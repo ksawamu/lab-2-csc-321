@@ -92,8 +92,8 @@ def submit (user_input):
     #new_string = new_string.replace("=", "%3D")
     #new_string = new_string.replace(";", "%3B")
     padded_input = pad(bytes(new_string, "utf-8") , AES.block_size, style='pkcs7')
-    print("padded input: ")
-    print(padded_input)
+    #print("padded input: ")
+    #print(padded_input)
     return cbc_mode_str(padded_input)
 
 def verify(encrypted_string):
@@ -115,7 +115,7 @@ def verify(encrypted_string):
             plain_text = bitwise_xor_bytes(encrypted_list[i - 1], decrypted) + plain_text
         else:
             plain_text = bitwise_xor_bytes(iv, decrypted) + plain_text
-    print(plain_text)
+    print("this is plain_text in verify(): ", plain_text)
     if bytes(";admin=true;", "utf-8") in plain_text:
         return True
     else:
@@ -133,10 +133,14 @@ def hack_verify(encrypted_string):
     print("original encrypted_string:")
     print(encrypted_string)
 
-
+    """
+    userid=456;userd
+    ata=8admin7true8
+    ; 000000000
+    session-id=31337 000000"""
     
     #new_encrypted_string = encrypted_list[0]
-    print("first 3 blocks of new_encrypted_string:")
+    #print("first 3 blocks of new_encrypted_string:")
     #print(new_encrypted_string)
     #bye_78 = bitwise_and_bytes(encrypted_list[0], b"\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f")#b"\x00\x0f\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f\x00\x0f\x0f\x0f\x0f")
     #replace_0 = bitwise_xor_bytes(bye_78, b"\x3B\x0f\x0f\x0f\x0f\x0f\x3D\x0f\x0f\x0f\x0f\x3B\x0f\x0f\x0f\x0f")
@@ -145,7 +149,13 @@ def hack_verify(encrypted_string):
     #(encrypted_list[1][0]).to_bytes(1, "big")
     
     new_encrypted_string = encrypted_list[0][0:15]
-    new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x00"), b"\x3B") # bitwise_xor_bytes(   , b"\x3B")
+    new_encrypted_string += bitwise_xor_bytes(bitwise_xor_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x3B"), b"\x38") 
+    
+    
+    #new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x00"), b"\x3B") 
+    #new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[0][15]).to_bytes(1, "big"), b"\x00"), b"\x3B") # bitwise_xor_bytes(   , b"\x3B")
+    
+    #a = bitwise_xor_bytes(encrypted_list[])
     # new_encrypted_string += encrypted_list[1][5:10]
     # new_encrypted_string += bitwise_xor_bytes(bitwise_and_bytes((encrypted_list[1][10]).to_bytes(1, "big"), b"\x00"), b"\x3D")
     # new_encrypted_string += encrypted_list[1][11:15]
@@ -175,12 +185,14 @@ def hack_verify(encrypted_string):
 
 
 
-"""userid=456;userd
+"""
+userid=456;userd
 ata=8admin7true8
 ; 000000000
 session-id=31337 000000"""
 
 
 # print(verify(submit(";admin=true;")))
-print(verify(hack_verify(submit("8admin7true8"))))
+print("this is output from nested verify: ", verify(hack_verify(submit("8admin7true8"))))
+print("this is the last print")
 
